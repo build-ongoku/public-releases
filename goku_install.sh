@@ -76,7 +76,13 @@ chmod +x "${TMP_DIR}/${BINARY_FILE}"
 echo -e "${YELLOW}Installing to ${INSTALL_DIR}/${BINARY_NAME}${RESET}"
 if [ ! -d "$INSTALL_DIR" ]; then
     echo -e "${YELLOW}Creating directory: ${INSTALL_DIR}${RESET}"
-    mkdir -p "$INSTALL_DIR"
+    # Check if we need sudo to create directory
+    if [ -w "$(dirname "$INSTALL_DIR")" ]; then
+        mkdir -p "$INSTALL_DIR"
+    else
+        echo -e "${YELLOW}Elevated permissions required to create ${INSTALL_DIR}${RESET}"
+        sudo mkdir -p "$INSTALL_DIR"
+    fi
 fi
 
 # Check if we need sudo to write to INSTALL_DIR
